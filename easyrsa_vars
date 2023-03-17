@@ -1,0 +1,32 @@
+
+if [ -z "$EASYRSA_CALLER" ]; then
+        echo "You appear to be sourcing an Easy-RSA *vars* file." >&2
+        echo "This is no longer necessary and is disallowed. See the section called" >&2
+        echo "*How to use this file* near the top comments for more details." >&2
+        return 1
+fi
+
+set_var EASYRSA                "/ca/easyrsa/easyrsa3"
+set_var EASYRSA_PKI            "/ca/private"
+set_var EASYRSA_EXT_DIR        "/ca/easyrsa/easyrsa3/x509-types"
+set_var EASYRSA_SSL_CONF       "/ca/easyrsa/easyrsa3/openssl-easyrsa.cnf"
+set_var EASYRSA_TEMP_FILE      "/ca/easyrsa/easyrsa3/extensions.temp"
+set_var EASYRSA_TEMP_DIR       "/ca/private"
+set_var EASYRSA_DN             "org"
+set_var EASYRSA_REQ_COUNTRY    "NA"
+set_var EASYRSA_REQ_PROVINCE   "N/A"
+set_var EASYRSA_REQ_CITY       "N/A"
+set_var EASYRSA_REQ_ORG        "netcrave"
+set_var EASYRSA_REQ_EMAIL      "no-reply@netcrave.io"
+set_var EASYRSA_REQ_OU         "N/A"
+set_var EASYRSA_ALGO           ed
+set_var EASYRSA_CURVE          ed448
+set_var EASYRSA_CA_EXPIRE      3650
+set_var EASYRSA_CERT_EXPIRE    3650
+set_var EASYRSA_CRL_DAYS       180
+set_var EASYRSA_CERT_RENEW     30
+set_var EASYRSA_RAND_SN        "no"
+set_var EASYRSA_NS_SUPPORT     "yes"
+set_var EASYRSA_NS_COMMENT     "netcrave site certificate"
+set_var EASYRSA_REQ_CN         "$(hostname)"
+set_var EASYRSA_DIGEST         "sha256"

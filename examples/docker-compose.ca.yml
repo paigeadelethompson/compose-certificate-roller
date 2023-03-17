@@ -1,0 +1,50 @@
+name: clandestine
+services:
+  ircd_sub_ca:
+    image: paigeadele/compose-certificate-roller
+    command:
+      - /bin/sh 
+      - -c 
+      - |
+        easyrsa init-pki &&
+        easyrsa build-ca nopass subca
+    volumes:
+      - ircd_private:/ca/private
+  ca_init:
+    depends_on:
+      ircd_sub_ca:
+        condition: service_completed_successfully
+    image: paigeadele/compose-certificate-roller
+    command:
+      - /bin/sh 
+      - -c 
+      - |
+        easyrsa init-pki &&
+        easyrsa build-ca nopass &&
+        easyrsa import-req /ircd/private/reqs/ca.req general &&
+        easyrsa sign-req ca ircd &&
+        cp -v private/issued/ircd.crt /ircd/private/ca.crt &&
+        cp private/ca.crt /ircd/private/root_ca.crt &&
+    volumes:
+      - ca_private:/ca/private
+      - ircd_private:/ircd/private
+  general_certs:
+    depends_on:
+      ca_init:
+        condition: service_completed_successfully
+    build:
+      context: /root/netcrave.io/dockerfiles/ca
+      dockerfile: Dockerfile
+    command:
+      - /bin/sh 
+      - -c 
+      - |
+        easyrsa show-ca &&
+        easyrsa gen-req irc.${HOSTNAME_LOCAL} nopass &&
+        easyrsa sign-req server irc.${HOSTNAME_LOCAL}
+    volumes:
+      - ircd_private:/ca/private
+
+volumes:
+  ca_private:
+  ircd_private:
